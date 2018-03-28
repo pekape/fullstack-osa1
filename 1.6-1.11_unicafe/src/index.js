@@ -5,28 +5,45 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      hyva: 0,
-      neutraali: 0,
-      huono: 0
+      hyvat: 0,
+      neutraalit: 0,
+      huonot: 0
     }
   }
 
   hyvaArvostelu = () => {
     this.setState((prevState) => ({
-      hyva: prevState.hyva + 1
+      hyvat: prevState.hyvat + 1
     }))
   }
 
   neutraaliArvostelu = () => {
     this.setState((prevState) => ({
-      neutraali: prevState.neutraali + 1
+      neutraalit: prevState.neutraalit + 1
     }))
   }
 
   huonoArvostelu = () => {
     this.setState((prevState) => ({
-      huono: prevState.huono + 1
+      huonot: prevState.huonot + 1
     }))
+  }
+
+  keskiarvo = () => {
+    let summa = 0
+    summa += this.state.hyvat
+    summa -= this.state.huonot
+    let arvosteluja = this.state.hyvat + this.state.neutraalit + this.state.huonot
+    if (arvosteluja === 0) return 0
+    let keskiarvo = summa / arvosteluja
+    return keskiarvo.toFixed(1)
+  }
+
+  positiivisia = () => {
+    let arvosteluja = this.state.hyvat + this.state.neutraalit + this.state.huonot
+    if (arvosteluja === 0) return 0
+    let positiivisia = 100 * this.state.hyvat / arvosteluja
+    return positiivisia.toFixed(1)
   }
 
   render() {
@@ -41,9 +58,11 @@ class App extends React.Component {
         <h2>statistiikka</h2>
 
         <div>
-          hyvä {this.state.hyva}<br />
-          neutraali {this.state.neutraali}<br />
-          huono {this.state.huono}
+          hyvä {this.state.hyvat}<br />
+          neutraali {this.state.neutraalit}<br />
+          huono {this.state.huonot}<br />
+          keskiarvo {this.keskiarvo()}<br />
+          positiivisia {this.positiivisia()} %
         </div>
       </div>
     )
