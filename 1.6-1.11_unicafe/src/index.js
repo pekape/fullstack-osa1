@@ -8,8 +8,28 @@ class App extends React.Component {
       hyvat: 0,
       neutraalit: 0,
       huonot: 0,
-      yhteensa: 0
+      yhteensa: 0,
+      arvostelut: {
+        hyva: this.hyvaArvostelu,
+        neutraali: this.neutraaliArvostelu,
+        huono: this.huonoArvostelu
+      }
     }
+  }
+
+  keskiarvo = () => {
+    if (this.state.yhteensa === 0) return 0
+    let summa = 0
+    summa += this.state.hyvat
+    summa -= this.state.huonot
+    let keskiarvo = summa / this.state.yhteensa
+    return keskiarvo.toFixed(1)
+  }
+
+  positiivisia = () => {
+    if (this.state.yhteensa === 0) return 0
+    let positiivisia = 100 * this.state.hyvat / this.state.yhteensa
+    return positiivisia.toFixed(1)
   }
 
   hyvaArvostelu = () => {
@@ -33,29 +53,16 @@ class App extends React.Component {
     }))
   }
 
-  keskiarvo = () => {
-    if (this.state.yhteensa === 0) return 0
-    let summa = 0
-    summa += this.state.hyvat
-    summa -= this.state.huonot
-    let keskiarvo = summa / this.state.yhteensa
-    return keskiarvo.toFixed(1)
-  }
-
-  positiivisia = () => {
-    if (this.state.yhteensa === 0) return 0
-    let positiivisia = 100 * this.state.hyvat / this.state.yhteensa
-    return positiivisia.toFixed(1)
-  }
+  arvostele = (arvosana) => this.state.arvostelut[arvosana]
 
   render() {
     return (
       <div>
         <h1>anna palautetta</h1>
 
-        <Button handler={this.hyvaArvostelu} teksti="hyvä" />
-        <Button handler={this.neutraaliArvostelu} teksti="neutraali" />
-        <Button handler={this.huonoArvostelu} teksti="huono" />
+        <Button handler={this.arvostele("hyva")} teksti="hyvä" />
+        <Button handler={this.arvostele("neutraali")} teksti="neutraali" />
+        <Button handler={this.arvostele("huono")} teksti="huono" />
 
         <h2>statistiikka</h2>
         <Statistics palautteet={this.state} keskiarvo={this.keskiarvo()}
