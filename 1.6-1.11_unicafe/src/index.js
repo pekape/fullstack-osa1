@@ -7,45 +7,44 @@ class App extends React.Component {
     this.state = {
       hyvat: 0,
       neutraalit: 0,
-      huonot: 0
+      huonot: 0,
+      yhteensa: 0
     }
   }
 
   hyvaArvostelu = () => {
     this.setState((prevState) => ({
-      hyvat: prevState.hyvat + 1
+      hyvat: prevState.hyvat + 1,
+      yhteensa: prevState.yhteensa + 1
     }))
   }
 
   neutraaliArvostelu = () => {
     this.setState((prevState) => ({
-      neutraalit: prevState.neutraalit + 1
+      neutraalit: prevState.neutraalit + 1,
+      yhteensa: prevState.yhteensa + 1
     }))
   }
 
   huonoArvostelu = () => {
     this.setState((prevState) => ({
-      huonot: prevState.huonot + 1
+      huonot: prevState.huonot + 1,
+      yhteensa: prevState.yhteensa + 1
     }))
   }
 
   keskiarvo = () => {
-    let arvosteluja = this.state.hyvat + this.state.neutraalit + this.state.huonot
-    if (arvosteluja === 0) return 0
-
+    if (this.state.yhteensa === 0) return 0
     let summa = 0
     summa += this.state.hyvat
     summa -= this.state.huonot
-
-    let keskiarvo = summa / arvosteluja
+    let keskiarvo = summa / this.state.yhteensa
     return keskiarvo.toFixed(1)
   }
 
   positiivisia = () => {
-    let arvosteluja = this.state.hyvat + this.state.neutraalit + this.state.huonot
-    if (arvosteluja === 0) return 0
-
-    let positiivisia = 100 * this.state.hyvat / arvosteluja
+    if (this.state.yhteensa === 0) return 0
+    let positiivisia = 100 * this.state.hyvat / this.state.yhteensa
     return positiivisia.toFixed(1)
   }
 
@@ -59,12 +58,8 @@ class App extends React.Component {
         <Button handler={this.huonoArvostelu} teksti="huono" />
 
         <h2>statistiikka</h2>
-
-        hyvä {this.state.hyvat}<br />
-        neutraali {this.state.neutraalit}<br />
-        huono {this.state.huonot}
-
-        <Statistics keskiarvo={this.keskiarvo} positiivisia={this.positiivisia} />
+        <Statistics palautteet={this.state} keskiarvo={this.keskiarvo()}
+                    positiivisia={this.positiivisia()} />
       </div>
     )
   }
@@ -74,15 +69,21 @@ const Button = ({handler, teksti}) => (
   <button onClick={handler}>{teksti}</button>
 )
 
-const Statistic = ({teksti, funktio, yksikko}) => (
-  <p>{teksti} {funktio()} {yksikko}</p>
+const Statistic = ({teksti, arvo, yksikko}) => (
+  <p>{teksti} {arvo} {yksikko}</p>
 )
 
-const Statistics = ({keskiarvo, positiivisia}) => {
+const Statistics = ({palautteet, keskiarvo, positiivisia}) => {
+  if (palautteet.yhteensa === 0) {
+    return <div>ei yhtään palautetta annettu</div>
+  }
   return (
     <div>
-      <Statistic teksti="keskiarvo" funktio={keskiarvo} />
-      <Statistic teksti="positiivisia" funktio={positiivisia} yksikko="%" />
+      <Statistic teksti="hyvä" arvo={palautteet.hyvat} />
+      <Statistic teksti="neutraali" arvo={palautteet.neutraalit} />
+      <Statistic teksti="huono" arvo={palautteet.huonot} />
+      <Statistic teksti="keskiarvo" arvo={keskiarvo} />
+      <Statistic teksti="positiivisia" arvo={positiivisia} yksikko="%" />
     </div>
   )
 }
