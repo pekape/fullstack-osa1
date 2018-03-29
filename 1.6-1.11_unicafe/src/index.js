@@ -65,8 +65,10 @@ class App extends React.Component {
         <Button handler={this.arvostele("huono")} teksti="huono" />
 
         <h2>statistiikka</h2>
-        <Statistics palautteet={this.state} keskiarvo={this.keskiarvo()}
-                    positiivisia={this.positiivisia()} />
+
+        <Statistics palautteet={this.state}
+                    keskiarvo={this.keskiarvo()}
+                    positiivisia={this.positiivisia()}/>
       </div>
     )
   }
@@ -77,21 +79,27 @@ const Button = ({handler, teksti}) => (
 )
 
 const Statistic = ({teksti, arvo, yksikko}) => (
-  <p>{teksti} {arvo} {yksikko}</p>
+  <tr>
+    <td>{teksti}</td>
+    <td>{arvo} {yksikko}</td>
+  </tr>
 )
 
 const Statistics = ({palautteet, keskiarvo, positiivisia}) => {
   if (palautteet.yhteensa === 0) {
     return <div>ei yhtään palautetta annettu</div>
   }
+
   return (
-    <div>
-      <Statistic teksti="hyvä" arvo={palautteet.hyvat} />
-      <Statistic teksti="neutraali" arvo={palautteet.neutraalit} />
-      <Statistic teksti="huono" arvo={palautteet.huonot} />
-      <Statistic teksti="keskiarvo" arvo={keskiarvo} />
-      <Statistic teksti="positiivisia" arvo={positiivisia} yksikko="%" />
-    </div>
+    <table>
+      <tbody>
+        <Statistic teksti="hyvä" arvo={palautteet.hyvat} />
+        <Statistic teksti="neutraali" arvo={palautteet.neutraalit} />
+        <Statistic teksti="huono" arvo={palautteet.huonot} />
+        <Statistic teksti="keskiarvo" arvo={keskiarvo} />
+        <Statistic teksti="positiivisia" arvo={positiivisia} yksikko="%" />
+      </tbody>
+    </table>
   )
 }
 
