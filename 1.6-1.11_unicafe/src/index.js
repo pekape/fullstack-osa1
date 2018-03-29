@@ -30,11 +30,13 @@ class App extends React.Component {
   }
 
   keskiarvo = () => {
+    let arvosteluja = this.state.hyvat + this.state.neutraalit + this.state.huonot
+    if (arvosteluja === 0) return 0
+
     let summa = 0
     summa += this.state.hyvat
     summa -= this.state.huonot
-    let arvosteluja = this.state.hyvat + this.state.neutraalit + this.state.huonot
-    if (arvosteluja === 0) return 0
+
     let keskiarvo = summa / arvosteluja
     return keskiarvo.toFixed(1)
   }
@@ -42,6 +44,7 @@ class App extends React.Component {
   positiivisia = () => {
     let arvosteluja = this.state.hyvat + this.state.neutraalit + this.state.huonot
     if (arvosteluja === 0) return 0
+
     let positiivisia = 100 * this.state.hyvat / arvosteluja
     return positiivisia.toFixed(1)
   }
@@ -51,22 +54,37 @@ class App extends React.Component {
       <div>
         <h1>anna palautetta</h1>
 
-        <button onClick={this.hyvaArvostelu}>hyvä</button>
-        <button onClick={this.neutraaliArvostelu}>neutraali</button>
-        <button onClick={this.huonoArvostelu}>huono</button>
+        <Button handler={this.hyvaArvostelu} teksti="hyvä" />
+        <Button handler={this.neutraaliArvostelu} teksti="neutraali" />
+        <Button handler={this.huonoArvostelu} teksti="huono" />
 
         <h2>statistiikka</h2>
 
-        <div>
-          hyvä {this.state.hyvat}<br />
-          neutraali {this.state.neutraalit}<br />
-          huono {this.state.huonot}<br />
-          keskiarvo {this.keskiarvo()}<br />
-          positiivisia {this.positiivisia()} %
-        </div>
+        hyvä {this.state.hyvat}<br />
+        neutraali {this.state.neutraalit}<br />
+        huono {this.state.huonot}
+
+        <Statistics keskiarvo={this.keskiarvo} positiivisia={this.positiivisia} />
       </div>
     )
   }
+}
+
+const Button = ({handler, teksti}) => (
+  <button onClick={handler}>{teksti}</button>
+)
+
+const Statistic = ({teksti, funktio, yksikko}) => (
+  <p>{teksti} {funktio()} {yksikko}</p>
+)
+
+const Statistics = ({keskiarvo, positiivisia}) => {
+  return (
+    <div>
+      <Statistic teksti="keskiarvo" funktio={keskiarvo} />
+      <Statistic teksti="positiivisia" funktio={positiivisia} yksikko="%" />
+    </div>
+  )
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
