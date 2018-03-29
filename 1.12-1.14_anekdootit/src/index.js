@@ -2,8 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 class App extends React.Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       selected: 0,
       votes: [0, 0, 0, 0, 0, 0]
@@ -20,19 +20,40 @@ class App extends React.Component {
     })
 
   render() {
+    const anecdotes = this.props.anecdotes
     const selected = this.state.selected
+    const votes = this.state.votes
+
+    let mostVoted = 0
+    for (let i = 1; i < votes.length; i++) {
+      if (votes[i] > votes[mostVoted]) {
+        mostVoted = i
+      }
+    }
+
     return (
       <div>
-        <p>{this.props.anecdotes[selected]}</p>
-        <p>has {this.state.votes[selected]} votes</p>
+        <Anecdote text={anecdotes[selected]} votes={votes[selected]} />
+
         <Button handler={this.vote(selected)} text="vote" />
         <Button handler={this.nextRandom} text="next anecdote" />
+
+        <h3>anecdote with most votes:</h3>
+
+        <Anecdote text={anecdotes[mostVoted]} votes={votes[mostVoted]} />
       </div>
     )
   }
 }
 
 const Button = ({handler, text}) => <button onClick={handler}>{text}</button>
+
+const Anecdote = ({text, votes}) => (
+  <div>
+    <p>{text}</p>
+    <p>has {votes} votes</p>
+  </div>
+)
 
 const anecdotes = [
   'If it hurts, do it more often',
